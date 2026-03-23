@@ -1,0 +1,383 @@
+# General
+
+==List attached devices==
+
+adb devices
+
+
+
+==Install a base.apk==
+
+adb install base.apk
+
+
+
+==List third-party packages==
+
+adb shell sh -c 'cmd package list packages -3'
+
+
+
+==List Oculus and system packages==
+
+adb shell sh -c 'cmd package list packages -s'
+
+
+
+==Find the location of a base.apk file==
+
+adb shell sh -c 'cmd package list packages -3'
+
+adb shell pm path [PACKAGE.NAME]
+
+
+
+==Pull the base.apk file==
+
+adb shell sh -c 'cmd package list packages -3'
+
+adb shell pm path [PACKAGE.NAME]
+
+adb pull /data/app/[FOLDER.NAME]/base.apk
+
+
+
+==Uninstall an application==
+
+adb shell sh -c 'cmd package list packages -3'
+
+adb uninstall [PACKAGE.NAME]
+
+
+
+==Push an OBB folder==
+
+adb push [OBB FOLDER NAME] sdcard/android/obb
+
+
+
+==List the contents of the OBB folder==
+
+adb shell ls sdcard/android/obb
+
+
+
+==Pull the OBB folder==
+
+adb shell ls sdcard/android/obb
+
+adb pull sdcard/android/obb/[FOLDER.NAME]
+
+
+
+==Take a screenshot==
+
+adb exec-out screencap -p > [IMAGE NAME].jpg
+
+
+
+==Record a video===
+
+adb shell screenrecord /sdcard/[VIDEO NAME].mp4
+
+
+
+==Pull a video==
+
+adb pull /sdcard/[VIDEO NAME].mp4
+
+
+
+==Enable Unity debug output for logs==
+
+adb shell setprop log.tag.Unity DEBUG
+
+
+
+==Check that Unity debug output is enabled==
+
+adb shell getprop log.tag.Unity
+
+
+
+==Pull a log==
+
+adb logcat -d > log.txt
+
+
+
+==Pull a Unity specific log==
+
+adb logcat -d | findstr Unity > log.txt
+
+
+
+==Clear past log data==
+
+adb logcat -c
+
+
+
+==Find the Oculus VR Shell version==
+
+adb shell dumpsys package com.oculus.vrshell | findstr versionCode
+
+
+
+==Find app version==
+
+adb shell sh -c 'cmd package list packages -3'
+
+adb shell dumpsys package [PACKAGE.NAME] | findstr versionCode
+
+
+
+==Get headset serial number==
+
+adb shell getprop ro.serialno
+
+
+
+==Find headset’s IP address==
+
+adb shell ip route
+
+
+
+==Connect VR headset to wireless==
+
+adb tcpip 5555
+
+adb connect [HEADSET'S IP ADDRESS]:5555
+
+
+
+==Disconnect VR headset from wireless==
+
+adb disconnect [HEADSET'S IP ADDRESS]:5555
+
+
+
+==Restart VR headset==
+
+adb reboot
+
+
+
+==Enable Wi-Fi==
+
+adb shell svc wifi enable
+
+
+
+==Disable Wi-Fi==
+
+adb shell svc wifi disable
+
+
+
+
+# Performance 
+
+==Install the OVR Metrics Tool==
+
+adb install OVRMetricsTool_v1.6.5.apk
+
+
+
+==Start recording OVR metrics to CSV files==
+
+adb shell am broadcast -n com.oculus.ovrmonitormetricsservice/.SettingsBroadcastReceiver -a com.oculus.ovrmonitormetricsservice.ENABLE_CSV
+
+
+
+==Open OVR==
+
+adb shell am start omms://app
+
+
+
+==Enable OVR overlay==
+
+adb shell am broadcast -n com.oculus.ovrmonitormetricsservice/.SettingsBroadcastReceiver -a com.oculus.ovrmonitormetricsservice.ENABLE_OVERLAY
+
+
+
+==Enable OVR Render Scale graph==
+
+adb shell am broadcast -n com.oculus.ovrmonitormetricsservice/.SettingsBroadcastReceiver -a com.oculus.ovrmonitormetricsservice.ENABLE_GRAPH --es stat render_scale
+
+
+
+==Enable Asynchronous Spacewarp graph==
+
+adb shell am broadcast -n com.oculus.ovrmonitormetricsservice/.SettingsBroadcastReceiver -a com.oculus.ovrmonitormetricsservice.ENABLE_GRAPH --es stat spacewarped_frames_per_second
+
+
+
+==Disable Asynchronous Spacewarp graph==
+
+adb shell am broadcast -n com.oculus.ovrmonitormetricsservice/.SettingsBroadcastReceiver -a com.oculus.ovrmonitormetricsservice.DISABLE_GRAPH --es stat spacewarped_frames_per_second
+
+
+
+==Disable OVR Render Scale graph==
+
+adb shell am broadcast -n com.oculus.ovrmonitormetricsservice/.SettingsBroadcastReceiver -a com.oculus.ovrmonitormetricsservice.DISABLE_GRAPH --es stat render_scale
+
+
+
+==Disable OVR overlay==
+
+adb shell am broadcast -n com.oculus.ovrmonitormetricsservice/.SettingsBroadcastReceiver -a com.oculus.ovrmonitormetricsservice.DISABLE_OVERLAY
+
+
+
+==Pull OVR performance logs==
+
+adb pull sdcard/Android/data/com.oculus.ovrmonitormetricsservice/files/CapturedMetrics
+
+
+
+==Get headset temperature==
+
+adb shell dumpsys battery | findstr "temperature"
+
+
+
+==Find Battery usage==
+
+adb shell dumpsys batterystats | findstr [PACKAGE.NAME]
+
+
+
+==Find Network usage==
+
+adb shell dumpsys netstats | findstr [PACKAGE.NAME]
+
+
+
+==Find Thread usage==
+
+adb shell dumpsys activity [PACKAGE.NAME]
+
+
+
+==Find CPU usage==
+
+adb shell dumpsys cpuinfo | findstr [PACKAGE.NAME]
+
+
+
+==Find Memory usage==
+
+adb shell dumpsys meminfo | findstr [PACKAGE.NAME]
+
+
+
+==Low battery state simulation==
+
+adb shell dumpsys battery set ac 0
+
+adb shell dumpsys battery set usb 0
+
+adb shell dumpsys battery set wireless 0
+
+adb shell dumpsys battery set level 1
+
+adb shell dumpsys battery unplug
+
+
+
+==Turn off low battery state simulation==
+
+adb shell dumpsys battery reset
+
+adb shell settings put global low_power 0
+
+
+
+
+# Packaging 
+
+==Pull Android Manifest==
+
+aapt2 dump xmltree base.apk --file AndroidManifest.xml > AndroidManifest.txt
+
+
+
+==List the contents of the base.apk file==
+
+aapt list base.apk
+
+
+
+==Find base.apk file size (in kilobytes)==
+
+adb shell sh -c 'cmd package list packages -3'
+
+adb shell pm path [PACKAGE.NAME]
+
+adb shell ls -s /data/app/[FOLDER.NAME]/base.apk
+
+
+
+==Find OBB file sizes (in kilobytes)==
+
+adb shell ls sdcard/android/obb
+
+adb shell ls -s sdcard/android/obb/[FOLDER.NAME]
+
+
+
+==Find app install location==
+
+aapt2 dump badging base.apk | findstr "install-location"
+
+
+
+==Find android.hardware.vr.headtracking status==
+
+aapt2 dump badging base.apk | findstr "android.hardware.vr.headtracking"
+
+
+
+==Find Min SDK and Target SDK versions used==
+
+aapt2 dump badging base.apk | findstr "sdkVersion: targetSdkVersion:"
+
+
+
+==Find features used==
+
+aapt2 dump badging base.apk | findstr "uses-feature"
+
+
+
+==Find permissions used==
+
+aapt2 dump badging base.apk | findstr "uses-permission"
+
+
+
+==64-bit binary check==
+
+aapt2 dump badging base.apk | findstr "native-code"
+
+
+
+==Find debuggable status== 
+
+aapt2 dump badging base.apk | findstr "android:debuggable application-debuggable"
+
+
+
+==Set the JAVA_HOME variable==
+
+setx /m JAVA_HOME "C:\Program Files\Java\jdk-25.0.2"
+
+
+
+==Verify the APK Signature Scheme==
+
+apksigner verify --verbose base.apk
